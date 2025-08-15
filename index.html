@@ -79,8 +79,9 @@
   </style>
 </head>
 <body class="bg-gray-100 flex flex-col items-center justify-start min-h-screen py-10">
+      <h1 class="text-3xl font-bold text-gray-800 mb-6">Quiz da Roleta</h1>
 
-  <h1 class="text-3xl font-bold text-gray-800 mb-6">Quiz da Roleta</h1>
+  <h6 class="text-3xl font-bold text-gray-800 mb-6">All rights by martensmart development</h6>
 
   <div class="wheel-container mb-6 bg-gray-200">
     <div class="pointer"></div>
@@ -119,80 +120,8 @@
 
     // As perguntas agora são um array, facilitando o gerenciamento e a correspondência com os segmentos da roleta.
     // Adicionei mais perguntas para que a roleta tenha mais opções.
-    const questions = [
-      {
-        id: 1,
-        q: "Você comeu 2/6 de um bolo e seu irmão comeu 3/6 do mesmo bolo. Qual a fração total do bolo que os dois comeram?",
-        options: ["5/6", " 1/2", "4/6"],
-        answer: "5/6"
-      },
-      {
-        id: 2,
-        q: "Quanto é 5 x 3?",
-        options: ["15", "10", "8"],
-        answer: "15"
-      },
-      {
-        id: 3,
-        q: "Qual o maior planeta do sistema solar?",
-        options: ["Terra", "Júpiter", "Marte"],
-        answer: "Júpiter"
-      },
-      {
-        id: 4,
-        q: "Quantos lados tem um triângulo?",
-        options: ["4", "3", "5"],
-        answer: "3"
-      },
-      {
-        id: 5,
-        q: "Qual é o símbolo químico da água?",
-        options: ["H2O", "O2", "CO2"],
-        answer: "H2O"
-      },
-      {
-        id: 6,
-        q: "Em que continente está o Egito?",
-        options: ["Ásia", "Europa", "África"],
-        answer: "África"
-      },
-      {
-        id: 7,
-        q: "Quantos vértices tem um cubo?",
-        options: ["6", "12", "8"],
-        answer: "8"
-      },
-      {
-        id: 8,
-        q: "Qual o resultado de 10 - 4 + 2?",
-        options: ["4", "8", "12"],
-        answer: "8"
-      },
-      {
-        id: 9,
-        q: "Qual animal é conhecido como o 'rei da selva'?",
-        options: ["Elefante", "Tigre", "Leão"],
-        answer: "Leão"
-      },
-      {
-        id: 10,
-        q: "Quem pintou a Mona Lisa?",
-        options: ["Van Gogh", "Leonardo da Vinci", "Picasso"],
-        answer: "Leonardo da Vinci"
-      },
-      {
-        id: 11,
-        q: "Quantos planetas existem no nosso sistema solar?",
-        options: ["8", "9", "10"],
-        answer: "8"
-      },
-      {
-        id: 12,
-        q: "Qual é a capital do Brasil?",
-        options: ["São Paulo", "Rio de Janeiro", "Brasília"],
-        answer: "Brasília"
-      }
-    ];
+let questions = JSON.parse(localStorage.getItem("quizQuestions")) || [];
+
 
     // Array de cores para os segmentos da roleta
     const segmentColors = [
@@ -201,24 +130,26 @@
     ];
 
     // Função para gerar as fatias da roleta dinamicamente
-    function generateWheel() {
-      const totalSegments = questions.length;
-      const degreesPerSegment = 360 / totalSegments;
+   function generateWheel() {
+  const totalSegments = questions.length;
+  const degreesPerSegment = 360 / totalSegments;
 
-      wheelElement.innerHTML = ''; // Limpa a roleta
-      questions.forEach((q, index) => {
-        const segment = document.createElement('div');
-        segment.classList.add('wheel-segment', `bg-[${segmentColors[index]}]`);
-        segment.style.transform = `rotate(${index * degreesPerSegment}deg)`;
-        
-        // Adiciona um número ou texto no segmento
-        const segmentText = document.createElement('span');
-        segmentText.textContent = q.id;
-        segment.appendChild(segmentText);
+  wheelElement.innerHTML = ''; // Limpa a roleta
 
-        wheelElement.appendChild(segment);
-      });
-    }
+  questions.forEach((q, index) => {
+    const segment = document.createElement('div');
+    segment.classList.add('wheel-segment');
+    segment.style.backgroundColor = segmentColors[index % segmentColors.length];
+    segment.style.transform = `rotate(${index * degreesPerSegment}deg)`;
+
+    const segmentText = document.createElement('span');
+    segmentText.textContent = q.id;
+    segment.appendChild(segmentText);
+
+    wheelElement.appendChild(segment);
+  });
+}
+
 
     // A lógica de giro foi ajustada para corresponder ao número de perguntas
     function spin() {
