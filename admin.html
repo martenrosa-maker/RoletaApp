@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Painel de Administração - Quiz</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+  <h1 class="text-3xl font-bold mb-6 text-center">Painel de Administração</h1>
+
+  <div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md">
+    <h2 class="text-xl font-semibold mb-4">Perguntas do Quiz</h2>
+    <div id="question-list" class="space-y-4"></div>
+
+    <h2 class="text-xl font-semibold mt-8 mb-4">Adicionar Nova Pergunta</h2>
+    <form id="add-question-form" class="space-y-4">
+      <input type="text" id="new-question" placeholder="Pergunta" class="w-full p-2 border rounded">
+      <input type="text" id="option1" placeholder="Opção 1" class="w-full p-2 border rounded">
+      <input type="text" id="option2" placeholder="Opção 2" class="w-full p-2 border rounded">
+      <input type="text" id="option3" placeholder="Opção 3" class="w-full p-2 border rounded">
+      <input type="text" id="correct-answer" placeholder="Resposta correta" class="w-full p-2 border rounded">
+      <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Adicionar</button>
+    </form>
+  </div>
+
+  <script>
+    let questions = JSON.parse(localStorage.getItem("quizQuestions")) || [];
+
+    function renderQuestions() {
+      const list = document.getElementById("question-list");
+      list.innerHTML = "";
+
+      questions.forEach((q, index) => {
+        const div = document.createElement("div");
+        div.className = "border p-4 rounded bg-gray-50";
+
+        div.innerHTML = `
+          <p><strong>Pergunta ${index + 1}:</strong> ${q.q}</p>
+          <p><strong>Opções:</strong> ${q.options.join(", ")}</p>
+          <p><strong>Resposta Correta:</strong> ${q.answer}</p>
+          <button onclick="deleteQuestion(${index})" class="mt-2 bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Excluir</button>
+        `;
+
+        list.appendChild(div);
+      });
+    }
+
+    function deleteQuestion(index) {
+      questions.splice(index, 1);
+      localStorage.setItem("quizQuestions", JSON.stringify(questions));
+      renderQuestions();
+    }
+
+    document.getElementById("add-question-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const q = document.getElementById("new-question").value;
+      const o1 = document.getElementById("option1").value;
+      const o2 = document.getElementById("option2").value;
+      const o3 = document.getElementById("option3").value;
+      const answer = document.getElementById("correct-answer").value;
+
+      if (q && o1 && o2 && o3 && answer) {
+       questions.push({
+  id: Date.now(), // ID único baseado no tempo
+  q,
+  options: [o1, o2, o3],
+  answer
+});
+
+        localStorage.setItem("quizQuestions", JSON.stringify(questions));
+        renderQuestions();
+        this.reset();
+      }
+    });
+
+    renderQuestions();
+  </script>
+</body>
+</html>
